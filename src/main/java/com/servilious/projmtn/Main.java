@@ -1,5 +1,6 @@
 package com.servilious.projmtn;
 
+import com.servilious.projmtn.shaders.BaseShader;
 import org.lwjgl.BufferUtils;
 
 import java.nio.FloatBuffer;
@@ -40,13 +41,19 @@ public class Main {
     public void main() {
         window = new Window(800, 640);
         window.createWindow();
+        BaseShader shader = new BaseShader();
         setupQuad();
         while (!window.shouldDestroyWindow()) {
             window.updateWindow();
 
             glBindVertexArray(vao);
+            shader.start();
             glDrawArrays(GL_TRIANGLES, 0, 6);
+            shader.stop();
         }
         window.clearMem();
+        shader.clearMem();
+        glDeleteVertexArrays(vao);
+        glDeleteBuffers(vbo);
     }
 }
