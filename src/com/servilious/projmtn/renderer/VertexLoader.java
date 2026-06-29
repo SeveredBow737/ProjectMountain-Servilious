@@ -47,6 +47,14 @@ public class VertexLoader {
         return new BaseModel(vaoId, positions.length / dimensions);
     }
 
+    public BaseModel loadToVAO(float[] positions, float texCoords[], int dimensions) {
+        int vaoId = createVAO();
+        this.storeDataInAttributeList(0, dimensions, positions);
+        this.storeDataInAttributeList(1, dimensions, texCoords);
+        unbindVAO();
+        return new BaseModel(vaoId, positions.length / dimensions);
+    }
+
 
     public int loadTexture(String resourcePath) {
         Texture tex = null;

@@ -1,0 +1,64 @@
+"_version" : 1
+"_type" : "font"
+"_fontSize" : 8
+
+"@_Macro" : "continue_to_font_mapping" : "\n"
+"_comment" : "Default Game Font, Down Bellow this line is the Font Mappings (Alex's Font Data File Format)"
+
+{
+    "char:A" : [0, 0],
+    "char:B" : [1, 0],
+    "char:C" : [2, 0],
+    "char:D" : [3, 0],
+    "char:E" : [4, 0],
+    "char:F" : [5, 0],
+    "char:G" : [6, 0],
+    "char:H" : [7, 0],
+    "char:I" : [8, 0],
+    "char:J" : [9, 0],
+    "char:K" : [10, 0],
+    "char:L" : [11, 0],
+    "char:M" : [12, 0],
+    "char:N" : [13, 0],
+    "char:O" : [14, 0],
+    "char:P" : [15, 0],
+    "char:Q" : [16, 0],
+    "char:R" : [17, 0],
+    "char:S" : [18, 0],
+    "char:T" : [19, 0],
+    "char:U" : [20, 0],
+    "char:V" : [21, 0],
+    "char:W" : [22, 0],
+    "char:X" : [23, 0],
+    "char:Y" : [24, 0],
+    "char:Z" : [25, 0],
+    "char:a" : [0, 1],
+    "char:b" : [1, 1],
+    "char:c" : [2, 1],
+    "char:d" : [3, 1],
+    "char:e" : [4, 1],
+    "char:f" : [5, 1],
+    "char:g" : [6, 1],
+    "char:h" : [7, 1],
+    "char:i" : [8, 1],
+    "char:j" : [9, 1],
+    "char:k" : [10, 1],
+    "char:m" : [11, 1],
+    "char:n" : [12, 1],
+    "char:o" : [13, 1],
+    "char:p" : [14, 1],
+    "char:q" : [15, 1],
+    "char:r" : [16, 1],
+    "char:s" : [17, 1],
+    "char:t" : [18, 1],
+    "char:u" : [19, 1],
+    "char:v" : [20, 1],
+    "char:w" : [21, 1],
+    "char:x" : [22, 1],
+    "char:y" : [23, 1],
+    "char:z" : [24, 1],
+}
+
+
+
+//ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-+=_

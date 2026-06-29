@@ -1,5 +1,7 @@
 package com.servilious.projmtn;
 
+import com.servilious.projmtn.gui.Font;
+import com.servilious.projmtn.gui.FontRenderer;
 import com.servilious.projmtn.gui.GuiRenderer;
 import com.servilious.projmtn.gui.GuiTexture;
 import com.servilious.projmtn.renderer.Camera;
@@ -59,7 +61,7 @@ public class Game {
         TerrainTexture rTex = new TerrainTexture(loader.loadTexture("dirt"));
         TerrainTexture gTex = new TerrainTexture(loader.loadTexture("rockpath"));
         TerrainTexture bTex = new TerrainTexture(loader.loadTexture("rockpath"));
-        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("map/blend_mtn_map"));
+        TerrainTexture blendMap = new TerrainTexture(loader.loadTexture("map/blend_grassmap"));
 
         TerrainTexturePack terrainTexture = new TerrainTexturePack(bgTex, rTex, gTex, bTex);
 
@@ -116,15 +118,24 @@ public class Game {
         Terrain terArrY[] = new Terrain[4];
 
 
-     terArrX[0] = new Terrain(1,-1, loader, terrainTexture, blendMap, "heightmap_5");//negative quad positive X: 0, negative Z: 1
-     terArrX[1] = new Terrain(-1,1, loader, terrainTexture, blendMap, "heightmap_7");//negative quad X: 1, Z: positive 1
-     terArrX[2] = new Terrain(-0,-1, loader, terrainTexture, blendMap, "heightmap_1"); //negative quad X: 0, Z: 1
-     terArrX[3] = new Terrain(-1,-0, loader, terrainTexture, blendMap, "heightmap_4"); //negative quad X: 1, Z: 0
-     terArrX[4] = new Terrain(-1,-1, loader, terrainTexture, blendMap, "heightmap_8"); //negative quad X: 1, Z: 1
+     terArrX[0] = new Terrain(1,-1, loader, terrainTexture, blendMap, "flatmap");//negative quad positive X: 0, negative Z: 1
+     terArrX[1] = new Terrain(-1,1, loader, terrainTexture, blendMap, "flatmap");//negative quad X: 1, Z: positive 1
+     terArrX[2] = new Terrain(-0,-1, loader, terrainTexture, blendMap, "flatmap"); //negative quad X: 0, Z: 1
+     terArrX[3] = new Terrain(-1,-0, loader, terrainTexture, blendMap, "flatmap"); //negative quad X: 1, Z: 0
+     terArrX[4] = new Terrain(-1,-1, loader, terrainTexture, blendMap, "flatmap"); //negative quad X: 1, Z: 1
 
      terArrX[5] = new Terrain(0,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 0, Z: 0
-     terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "hillymap_1");//positive quad X: 0, Z: 1
-     terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "reactormap"); //positive quad X: 1, Z: 0
+     terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "flatmap");//positive quad X: 0, Z: 1
+     terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 1, Z: 0
+
+//        terArrX[0] = new Terrain(1,-1, loader, terrainTexture, blendMap, "heightmap_5");//negative quad positive X: 0, n
+//        terArrX[1] = new Terrain(-1,1, loader, terrainTexture, blendMap, "heightmap_7");//negative quad X: 1, Z: positiv
+//        terArrX[2] = new Terrain(-0,-1, loader, terrainTexture, blendMap, "heightmap_1"); //negative quad X: 0, Z: 1
+//        terArrX[3] = new Terrain(-1,-0, loader, terrainTexture, blendMap, "heightmap_4"); //negative quad X: 1, Z: 0
+//        terArrX[4] = new Terrain(-1,-1, loader, terrainTexture, blendMap, "heightmap_8"); //negative quad X: 1, Z: 1
+//        terArrX[5] = new Terrain(0,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 0, Z: 0
+//        terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "hillymap_1");//positive quad X: 0, Z: 1
+//        terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "reactormap"); //positive quad X: 1, Z: 0
 
         for (int x = 0; x < 768; x++) {
           float xRand = (float) (rand.nextFloat() * x - 30 % 5 + Math.floorMod(90, 190) / 24 % 6 * Math.cos(75) + Math.sin(80) * 3) % 20 / 3 + x % 29 + (50 / 2 + Math.abs(x) % 2 * 10 / 2 +(float) Math.floor(x) / 2 % 3 * 90)  ; //idek bro
@@ -154,15 +165,19 @@ public class Game {
         GuiTexture hudBarStamina = new GuiTexture(loader.loadTexture("gui/HUD_EmptyBarGUI"), new Vector2f(0.04F, -0.90f), new Vector2f(0.45f, 0.065f));
         GuiTexture hudMinimapSlot = new GuiTexture(loader.loadTexture("gui/HUD_MiniMapSlotGUI"), new Vector2f(-0.745F, -0.6f), new Vector2f(0.25f, 0.35f));
         GuiTexture guiButton = new GuiTexture(loader.loadTexture("gui/Menu_ButtonGUI"), new Vector2f(0, 0), new Vector2f(0.25f, 0.35f));
+        GuiTexture guiFont = new GuiTexture(loader.loadTexture("font/font"), new Vector2f(0, 0), new Vector2f(0.75f, 0.75f));
 
         guiTextures.add(hudGear);
         guiTextures.add(hudBarHP);
         guiTextures.add(hudBarStamina);
         guiTextures.add(hudMinimapSlot);
+
         GuiRenderer guiRenderer = new GuiRenderer(loader);
+        FontRenderer fontRenderer = new FontRenderer(loader);
 
-        MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terArrX[5]);
-
+       // MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terArrX[5]);
+        Font font = new Font();
+        font.loadFont("resources/font.afnt", "resources/textures/font/font.png");
 
 
         while (!Display.isCloseRequested()) {
@@ -181,8 +196,10 @@ public class Game {
                 renderer.processModel(model1);
             }
             renderer.render(lights, camera);
-            guiRenderer.renderGUIs(guiTextures);
-
+            if (!Keyboard.isKeyDown(Keyboard.KEY_F1)) {
+                guiRenderer.renderGUIs(guiTextures);
+                fontRenderer.renderFont(guiFont);
+            }
 
             /*
             *Experimental Fullscreen (NEED -enableFullscreen set)
