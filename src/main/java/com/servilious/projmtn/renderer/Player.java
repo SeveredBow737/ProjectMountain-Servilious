@@ -56,11 +56,15 @@ public class Player extends Model {
     }
 
     private void checkInput(boolean devMode) {
+
+
         if (!devMode) {
             if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
+                System.out.println("W");
                 this.currentSpeed = RUN_SPEED;
             } else if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
                 this.currentSpeed = -RUN_SPEED;
+                System.out.println("S");
             } else {
                 this.currentSpeed = 0;
             }
@@ -68,8 +72,10 @@ public class Player extends Model {
                 this.currentSpeed = 100;
             }
             if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
+                System.out.println("D");
                 this.currentTurnSpeed = -TURN_SPEED;
             } else if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
+                System.out.println("A");
                 this.currentTurnSpeed = TURN_SPEED;
             } else {
                 this.currentTurnSpeed = 0;
@@ -78,5 +84,6 @@ public class Player extends Model {
                 jump();
             }
         }
+
     }
 }

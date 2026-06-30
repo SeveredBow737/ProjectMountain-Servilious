@@ -116,7 +116,7 @@ public class VertexLoader {
             h = stack.mallocInt(1);
             a = stack.mallocInt(1);
             for (int i = 0; i < cubeMapTextures.length; i++) {
-                data = STBImage.stbi_load(GlobalConstants.getResourcePath() + "/textures/cubemap/" + cubeMapTextures[i], w, h, a, 4);  // decodeTexFile("resources/textures/cubemap/" + cubeMapTextures[i] + ".png");
+                data = STBImage.stbi_load(GlobalConstants.getResourcePath() + "/textures/cubemap/" + cubeMapTextures[i] + ".png", w, h, a, 4);  // decodeTexFile("resources/textures/cubemap/" + cubeMapTextures[i] + ".png");
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
             }
             width = w.get();

@@ -40,21 +40,14 @@ public class TerrainRenderer {
     private void prepareTerrain(Terrain terrain) {
         BaseModel baseModel = terrain.getModel();
         glBindVertexArray(baseModel.getVaoId());
+
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
         bindTextures(terrain);
-
         shader.loadAdditionalLightingFeatures(1, 10000000);
     }
 
-    //forPlayer class
-    // float dx = (float) (distance * Math.sin(Math.toRadians(super.getRotY() - 90)));
-    //  float dz = (float) (distance * Math.cos(Math.toRadians(super.getRotY() - 90)));
-
-
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     public void bindTextures(Terrain terrain) {
         TerrainTexturePack texturePack = terrain.getTexturePack();
@@ -90,9 +83,7 @@ public class TerrainRenderer {
 
 
     private void loadModelMatrix(Terrain terrain) {
-        Matrix4f transformationMatrix = MathHelper.setupTransformationMatrix(new Vector3f(terrain.getX(), 0, terrain.getZ()), 0, 0, 0, 1);
+        Matrix4f transformationMatrix = MathHelper.setupTransformationMatrix(new Vector3f(terrain.getX(), 256, terrain.getZ()), 0, 0, 0, 1);
         shader.loadTransformationMatrix(transformationMatrix);
     }
-
-
 }

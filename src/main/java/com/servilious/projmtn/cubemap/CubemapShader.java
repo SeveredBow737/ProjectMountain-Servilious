@@ -9,7 +9,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class CubemapShader extends BaseShaderProgram {
-    private static final String VERTEX_PATH = GlobalConstants.getResourcePath() + "/shaders/cubemap/cubemapVertex_shader.glsl";
+    private static final String VERTEX_PATH = GlobalConstants.getResourcePath() + "/shaders/cubemap/CubemapVertexShader.vsh";
     private static final String FRAGMENT_PATH = GlobalConstants.getResourcePath() + "/shaders/cubemap/CubemapFragmentShader.fsh";
 
     private static final float ROTATION_SPEED = 1F;
@@ -55,7 +55,7 @@ public class CubemapShader extends BaseShaderProgram {
         Matrix4f mat4 = MathHelper.createViewMatrix(camera);
         mat4.m30(0);
         mat4.m31(0);
-        mat4.m32(0);
+        mat4.m33(0);
         rotation += ROTATION_SPEED * manager.getFrameTimeSeconds();
         mat4.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0));
         super.setMat4(location_viewMatrix, mat4);

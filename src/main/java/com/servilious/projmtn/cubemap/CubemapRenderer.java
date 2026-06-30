@@ -92,8 +92,8 @@ public class CubemapRenderer {
     private void bindTextures(){ //well change this as every thing else in the future
         time += GameWindowManager.getFrameTimeSeconds() * 1000;
         time %= 24000;
-        int texture1 = 0;
-        int texture2 = 0;
+        int texture1;
+        int texture2;
         float blendFactor;
         //Time
         if(time >= 0 && time < 5000){

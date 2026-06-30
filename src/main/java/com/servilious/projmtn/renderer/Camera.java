@@ -68,37 +68,16 @@ public class Camera {
             }
 
 
-            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
                 position.y -= speed;
-            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+            }
+            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
                 position.y += speed;
-
-
-
-
-
-
-            if (!beenRightClicking &&   isMouseLocked) {
-                lym =0; // Mouse.getY();
-                lxm =0; // Mouse.getX();
-                beenRightClicking = true;
             }
 
 
 
-
-            if (isMouseLocked && glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-                int cym = 0; //Mouse.getY();
-                int cxm = 0; //Mouse.getX();
-
-                Vector2f deltaMouse = new Vector2f(cxm - lxm, cym - lym);
-
-                pitch -= deltaMouse.y * lookSpeed;
-                yaw += deltaMouse.x * lookSpeed;
-
-                lym = 0; // Mouse.getY();
-                lxm = 0; // Mouse.getX();
-
+            if (isMouseLocked) {
                 glfwSetCursorPosCallback(windowManager.getWindow(), new GLFWCursorPosCallback() {
                     @Override
                     public Descriptor getDescriptor() {
@@ -112,42 +91,33 @@ public class Camera {
 
                     @Override
                     public void invoke(long window, double xpos, double ypos) {
+                        int cym = (int) ypos;
+                        int cxm = (int) xpos;
+
+                        Vector2f deltaMouse = new Vector2f(cxm - lxm, cym - lym);
+
+                        pitch += deltaMouse.y * lookSpeed;
+                        yaw += deltaMouse.x * lookSpeed;
+
                         lym = (int) ypos;
                         lxm = (int) xpos;
 
-                        if (xpos < 0 || xpos > GameWindowManager.getWidth()) {
-                            glfwSetCursorPos(windowManager.getWindow(), 0, ypos);
-                        }
+                        lym = (int) ypos;
+                        lxm = (int) xpos;
 
-                        if (ypos < 0 || ypos > GameWindowManager.getHeight()) {
-                            glfwSetCursorPos(windowManager.getWindow(), xpos, 0);
+                        if (pitch > 90.0) {
+                            pitch = 89.9f;
+                        }
+                        if (pitch < -90.0) {
+                            pitch = -89.9f;
                         }
                     }
                 });
-
-
-                //0,0 left bottom corner
-                //maxWidth,maxHeight right top corner
-             //   if (Mouse.getX() < 0 || Mouse.getX() > GameWindowManager.width) {
-             //       glfwSetCursorPos(windowManager.getWindow(), 0, 0);
-                //    Mouse.setCursorPosition(0, Mouse.getY());
-                    System.out.println("Mouse is Not Inside Window");
-          //      }
-
-             //   if (Mouse.getY() < 0 || Mouse.getY() > GameWindowManager.height) {
-
-                //    Mouse.setCursorPosition(Mouse.getX(), 0);
-                  //  System.out.println("Mouse is Not Inside Window");
-            //    }
-            } else beenRightClicking = false;
+            }
         } else if (!devMode) {
-            ImGui.text("A");
           calculateZoom();
-            ImGui.text("B");
           calculatePitch();
-            ImGui.text("C");
           calculateAngleSphericalFromPlayer();
-            ImGui.text("D");
           float horizDist = calculateHorizontalDist();
           float vertDist = calculateVerticelDist();
           calculateCamPos(horizDist, vertDist);
@@ -174,7 +144,6 @@ public class Camera {
 
 
     private void calculateZoom() {
-        ImGui.text("A2");
         glfwSetScrollCallback(manager.getWindow(), new GLFWScrollCallback() {
                 @Override
                 public void invoke(long window, double xoffset, double yoffset) {
@@ -183,11 +152,12 @@ public class Camera {
                     distFromPlayer += zoomLevel;
                 }
             });
+
     }
 
     private void calculatePitch() {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
-            ImGui.text("V2");
+
             glfwSetCursorPosCallback(manager.getWindow(), new GLFWCursorPosCallback() {
                 @Override
                 public void invoke(long window, double xpos, double ypos) {
@@ -202,7 +172,6 @@ public class Camera {
 
     private void calculateAngleSphericalFromPlayer() {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-            ImGui.text("EA");
             glfwSetCursorPosCallback(manager.getWindow(), new GLFWCursorPosCallback() {
 
                 @Override

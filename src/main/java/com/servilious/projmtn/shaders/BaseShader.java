@@ -1,5 +1,6 @@
 package com.servilious.projmtn.shaders;
 
+import com.servilious.projmtn.GlobalConstants;
 import com.servilious.projmtn.renderer.Camera;
 import com.servilious.projmtn.renderer.model.Light;
 import com.servilious.projmtn.util.MathHelper;
@@ -12,8 +13,8 @@ import java.util.List;
 public class BaseShader extends BaseShaderProgram {
     private static final int MAX_LIGHT = 15;
 
-    private static final String VERTEX_SHADER_FILE = "/shaders/VertexShader.vsh";
-    private static final String FRAGMENT_SHADER_FILE = "/shaders/FragmentShader.fsh";
+    private static final String VERTEX_SHADER_FILE = GlobalConstants.getResourcePath() +  "/shaders/VertexShader.vsh";
+    private static final String FRAGMENT_SHADER_FILE = GlobalConstants.getResourcePath() + "/shaders/FragmentShader.fsh";
 
     private int location_transformationMatrix;
     private int location_projectionMatrix;

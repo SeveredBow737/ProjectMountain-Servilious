@@ -8,6 +8,8 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
+
 public class MousePicker {
     private static final int RECURSION_COUNT = 200;
     private static final float RAY_RANGE = 600;
@@ -18,13 +20,15 @@ public class MousePicker {
     private Camera camera;
     private Terrain terrain;
     private Vector3f currentTerrainPoint;
+    private GameWindowManager windowManager;
 
 
-    public MousePicker(Camera camera, Matrix4f projectionMat, Terrain terrain) {
+    public MousePicker(Camera camera, Matrix4f projectionMat, Terrain terrain, GameWindowManager  windowManager) {
         this.camera = camera;
         this.projectionMat = projectionMat;
         this.terrain = terrain;
         this.viewMat = MathHelper.createViewMatrix(camera);
+        this.windowManager = windowManager;
     }
 
     public Vector3f getCurrentRay() {
@@ -43,8 +47,10 @@ public class MousePicker {
     }
 
     private Vector3f calculateMouseRay() {
+
+
         float mx = 0; //Mouse.getX();
-        float my =0; //  Mouse.getY();
+        float my = 0; //  Mouse.getY();
         Vector2f normalisedCoords = convertNormalizedDeviceCoords(mx, my);
         Vector4f clipCoords = new Vector4f(normalisedCoords.x, normalisedCoords.y, -1F, 1F);
         Vector4f viewCoords = inverseProjectionMatrix(clipCoords);
@@ -56,7 +62,7 @@ public class MousePicker {
         Matrix4f invertedViewMat = new Matrix4f();
         invertedViewMat.invert(viewMat);
         Vector4f worldCoords = new Vector4f();
-        invertedViewMat.transform(viewCoords, null);
+        invertedViewMat.transform(viewCoords, worldCoords);
         Vector3f mouseRay = new Vector3f(worldCoords.x, worldCoords.y, -worldCoords.z);
         mouseRay.normalize();
         return mouseRay;
@@ -65,7 +71,8 @@ public class MousePicker {
     private Vector4f inverseProjectionMatrix(Vector4f clipCoords) {
         Matrix4f invertedProjectionMat = new Matrix4f();
         invertedProjectionMat.invert(projectionMat);
-        Vector4f viewCoords = invertedProjectionMat.transform(clipCoords, null);
+        Vector4f viewCoords = new Vector4f();
+        viewCoords = invertedProjectionMat.transform(clipCoords, viewCoords);
         return new Vector4f(viewCoords.x, viewCoords.y, -1F, 0F);
     }
 

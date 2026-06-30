@@ -123,7 +123,7 @@ public class Game {
         lampModelTex.setShineFactor(10);
         lampModelTex.setReflectivity(1000);
 
-        Terrain terArrX[] = new Terrain[8];
+        Terrain terArrX[] = new Terrain[9];
 
 
         terArrX[0] = new Terrain(1,-1, loader, terrainTexture, blendMap, "flatmap");//negative quad positive X: 0, negative Z: 1
@@ -135,6 +135,7 @@ public class Game {
         terArrX[5] = new Terrain(0,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 0, Z: 0
         terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "flatmap");//positive quad X: 0, Z: 1
         terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 1, Z: 0
+        terArrX[8] = new Terrain(1,1, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 1, Z: 0
 
 
 
@@ -147,11 +148,12 @@ public class Game {
 //        terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "hillymap_1");//positive quad X: 0, Z: 1
 //        terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "reactormap"); //positive quad X: 1, Z: 0
 
-        for (int x = 0; x < 768; x++) {
-            float xRand = (float) (rand.nextFloat() * x - 30 % 5 + Math.floorMod(90, 190) / 24 % 6 * Math.cos(75) + Math.sin(80) * 3) % 20 / 3 + x % 29 + (50 / 2 + Math.abs(x) % 2 * 10 / 2 +(float) Math.floor(x) / 2 % 3 * 90)  ; //idek bro
-            float zRand = (float) ((float) rand.nextFloat() * x % 30 / 5 % 4 / 24 / 2 % 5 * 2 * Math.sin(75) + (Math.cos(90) * 3) / 2 % 8 * 2 + x + Math.pow(x, xRand) % 5 * 10 / 5 + 5 + Math.floor(x) / 2 / 3 % 1 / 1000);
-            float y = terArrX[0].getHeightOfTerrain(xRand, zRand);
-            allTrees.add(new Model(texturedModel, new Vector3f(xRand, y, zRand), 0, 0, 0, 1));
+        for (int x = 0; x < 1024; x++) {
+            float randX = rand.nextInt(1024) / rand.nextFloat() * 0.2f;
+            float randZ = rand.nextInt(1024) / rand.nextFloat() * 0.75f;
+            int i = rand.nextInt(0, 15);
+            float y = terArrX[0].getHeightOfTerrain(randX, randZ);
+            allTrees.add(new Model(texturedModel, new Vector3f(250 - randX, y,300 - randZ), 0, 0, 0, 1));
         }
 
 
@@ -162,7 +164,7 @@ public class Game {
         lights.add(new Light(new Vector3f(185, 10, -293), new Vector3f(0, 2, 2), new Vector3f(1, 0.01f, 0.002f)));
 
 
-     //   Mouse.setGrabbed(true);
+        glfwSetCursorPos(windowManager.getWindow(), glfwGetVideoMode(glfwGetPrimaryMonitor()).width() / 2,glfwGetVideoMode(glfwGetPrimaryMonitor()).height() / 2);
     //    Mouse.setCursorPosition(Display.getDisplayMode().getWidth() / 2, Display.getDisplayMode().getHeight() / 2);
 
 
@@ -175,7 +177,6 @@ public class Game {
         GuiTexture hudBarStamina = new GuiTexture(loader.loadTexture("gui/HUD_EmptyBarGUI"), new Vector2f(0.04F, -0.90f), new Vector2f(0.45f, 0.065f));
         GuiTexture hudMinimapSlot = new GuiTexture(loader.loadTexture("gui/HUD_MiniMapSlotGUI"), new Vector2f(-0.745F, -0.6f), new Vector2f(0.25f, 0.35f));
         GuiTexture guiButton = new GuiTexture(loader.loadTexture("gui/Menu_ButtonGUI"), new Vector2f(0, 0), new Vector2f(0.25f, 0.35f));
-        GuiTexture guiFont = new GuiTexture(loader.loadTexture("font/font"), new Vector2f(0, 0), new Vector2f(0.75f, 0.75f));
 
         guiTextures.add(hudGear);
         guiTextures.add(hudBarHP);
@@ -183,67 +184,66 @@ public class Game {
         guiTextures.add(hudMinimapSlot);
 
         GuiRenderer guiRenderer = new GuiRenderer(loader);
-        FontRenderer fontRenderer = new FontRenderer(loader);
 
         glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-        // MousePicker picker = new MousePicker(camera, renderer.getProjectionMatrix(), terArrX[5]);
-        Font font = new Font();
-        font.loadFont( GlobalConstants.getResourcePath() +  "/font.afnt", GlobalConstants.getResourcePath() + "/textures/font/font.png");
-
+        boolean isMainMenu = true;
 
         while (!windowManager.shouldDestroy()) {
-            implGl3.newFrame();
-            implGlfw.newFrame();
-            ImGui.newFrame();
-            ImGui.begin("Hello World");
-            camera.move(isDevMode, windowManager);
-            ImGui.setWindowSize(new ImVec2(200, 200));
-            ImGui.textColored(255, 255, 0, 255, "Hello World ");
-
-            ImGui.end();
-
-            for (int i = 0; i < terArrX.length; i++) {
-                modelPlayer.move(terArrX[i], isDevMode);
-                renderer.processTerrain(terArrX[i]);
+            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_ENTER) == GLFW_PRESS) {
+                isMainMenu = false;
             }
 
-            renderer.processModel(model2);
-            renderer.processModel(modelPlayer);
-            renderer.processModel(lampModel);
+            if (!isMainMenu) {
+                implGl3.newFrame();
+                implGlfw.newFrame();
+                ImGui.newFrame();
+                ImGui.begin("Hello World");
+                camera.move(isDevMode, windowManager);
+                ImGui.setWindowSize(new ImVec2(200, 200));
+                ImGui.textColored(255, 255, 0, 255, "Player XYZ :" + camera.getPos().x + ", " + camera.getPos().y + ", " + camera.getPos().z);
 
-            for (Model model1 : allTrees) {
-                renderer.processModel(model1);
-            }
-            renderer.render(lights, camera);
+                ImGui.end();
 
-            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_F1) != GLFW_PRESS) {
-                guiRenderer.renderGUIs(guiTextures);
-              //  fontRenderer.renderFont(guiFont);
-            }
-
-            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS && !isPaused) {//if the key escape is down un grab the mouse
-                isPaused = true;
-                if (isPaused) {
-                    guiRenderer.renderGUI(guiButton);
+                for (int i = 0; i < terArrX.length; i++) {
+                    modelPlayer.move(terArrX[i], isDevMode);
+                    renderer.processTerrain(terArrX[i]);
                 }
-                glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-                // Mouse.setGrabbed(false);
+                renderer.processModel(model2);
+                renderer.processModel(modelPlayer);
+                renderer.processModel(lampModel);
 
-            }
+                for (Model model1 : allTrees) {
+                    renderer.processModel(model1);
+                }
+                renderer.render(lights, camera);
 
-            if(glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-                isPaused = false;
-                glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-            }
+                if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_F1) != GLFW_PRESS) {
+                    guiRenderer.renderGUIs(guiTextures);
+                    //  fontRenderer.renderFont(guiFont);
+                }
 
-            ImGui.render();
-            implGl3.renderDrawData(ImGui.getDrawData());
-            if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
-                final long backupCurrentContext = glfwGetCurrentContext();
-                ImGui.updatePlatformWindows();
-                ImGui.renderPlatformWindowsDefault();
-                glfwMakeContextCurrent(backupCurrentContext);
+                if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS && !isPaused) {//if the key escape is down un grab the mouse
+                    isPaused = true;
+                    if (isPaused) {
+                        glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                        guiRenderer.renderGUI(guiButton);
+                    }
+                }
+
+                if (glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+                    isPaused = false;
+                    glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                }
+
+                ImGui.render();
+                implGl3.renderDrawData(ImGui.getDrawData());
+                if (ImGui.getIO().hasConfigFlags(ImGuiConfigFlags.ViewportsEnable)) {
+                    final long backupCurrentContext = glfwGetCurrentContext();
+                    ImGui.updatePlatformWindows();
+                    ImGui.renderPlatformWindowsDefault();
+                    glfwMakeContextCurrent(backupCurrentContext);
+                }
             }
             windowManager.updateWindow();
         }

@@ -20,8 +20,6 @@ public class Terrain {
     private static final float MAX_HEIGHT = 256;
     private static final float MAX_PIXEL_COLOR = 256 * 256 * 256;
     private float[][] heights;
-
-
     private float x;
     private float z;
     private BaseModel model;
@@ -107,20 +105,20 @@ public class Terrain {
                 vertices[vertexPointer*3+2] = (float)i/((float)VERTEX_COUNT - 1) * SIZE;
                 Vector3f normal = calcNormals(j, i, img);
 
-                normals[vertexPointer*3] = normal.x;
-                normals[vertexPointer*3+1] = normal.y;
-                normals[vertexPointer*3+2] = normal.z;
+                normals[vertexPointer*3] = normal.x + 100; // +100 IS NEEDED FOR THE LIGHTING AT THE BORDERS OF EACH GRID TO NOT HAVE A DARK LINE!!
+                normals[vertexPointer*3+1] = normal.y + 100;
+                normals[vertexPointer*3+2] = normal.z + 100;
                 textureCoords[vertexPointer*2] = (float)j/((float)VERTEX_COUNT - 1);
                 textureCoords[vertexPointer*2+1] = (float)i/((float)VERTEX_COUNT - 1);
                 vertexPointer++;
             }
         }
         int pointer = 0;
-        for(int gz=0;gz<VERTEX_COUNT-1;gz++){
-            for(int gx=0;gx<VERTEX_COUNT-1;gx++){
-                int topLeft = (gz*VERTEX_COUNT)+gx;
+        for(int gz = 0; gz < VERTEX_COUNT - 1; gz++){
+            for(int gx = 0; gx < VERTEX_COUNT - 1; gx++){
+                int topLeft = (gz * VERTEX_COUNT) + gx;
                 int topRight = topLeft + 1;
-                int bottomLeft = ((gz+1)*VERTEX_COUNT)+gx;
+                int bottomLeft = ((gz + 1) * VERTEX_COUNT) + gx;
                 int bottomRight = bottomLeft + 1;
                 indices[pointer++] = topLeft;
                 indices[pointer++] = bottomLeft;
