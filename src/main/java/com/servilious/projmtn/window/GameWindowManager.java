@@ -78,7 +78,7 @@ public class GameWindowManager {
     }
 
     private long getCurrentTime() {
-        return (long) (glfwGetTime() * 1000 / glfwGetTime()); //add F front of 1000Sys.getTimerResolution()
+        return (long) (glfwGetTime() * 1000);
     }
 
     public long getWindow() {

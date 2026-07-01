@@ -26,14 +26,12 @@ import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.freetype.FT_Face;
 import org.lwjgl.util.freetype.FreeType;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,34 +43,25 @@ public class Game {
     //* Constants *//
     private static boolean isDevMode = false;
     private static boolean fullscreenEnabled = false;
-    private static List<Model>allTrees;
+    private static List<Model> allTrees;
     private static Random rand = new Random();
     private static boolean isPaused = false;
     private ImGuiImplGlfw implGlfw = new ImGuiImplGlfw();
     private ImGuiImplGl3 implGl3 = new ImGuiImplGl3();
     private String glslVer = "#version 330 core";
     private GameWindowManager windowManager = new GameWindowManager();
-    private  List<Character> chars = new ArrayList<>();
     private FontShader fontShader;
     private int fontVAO, fontVBO;
+    private List<Character> chars = new ArrayList<>(128);
 
+    private static final Vector3f ZERO_VEC = new Vector3f(0);
+    private static final Vector3f ONE_ZERO_ZERO = new Vector3f(1, 0, 0);
+    private static final List<Light> frameLights = new ArrayList<>(3);
+    private final Light sunLight = new Light(new Vector3f(200000, 1000000, 200000), new Vector3f(1, 1, 1));
+    private final Light ambientLight = new Light(new Vector3f(0, 1000, -7000), new Vector3f(0.4f, 0.4f, 0.4f));
+    private final Light lampLight = new Light(new Vector3f(185, 10, -293), new Vector3f(0, 2, 2), new Vector3f(1, 0.01f, 0.002f));
 
-
-    record Character() {
-        static int texID;
-        static Vector2i size;
-        static Vector2i bearing;
-        static int advance;
-
-        Character(int texID, Vector2i size, Vector2i bearing, int advance) {
-            this();
-            this.texID = texID;
-            this.size = size;
-            this.bearing = bearing;
-            this.advance = advance;
-
-        }
-    }
+    record Character(int texID, Vector2i size, Vector2i bearing, int advance) {}
 
 
 
@@ -158,7 +147,7 @@ public class Game {
                 // now store character for later use
 
                 Character character = new Character(texture, new Vector2i(face.glyph().bitmap().width(), face.glyph().bitmap().rows()),  new Vector2i(face.glyph().bitmap_left(), face.glyph().bitmap_top()), (int) face.glyph().advance().x());
-                //  chars.add(); //  std::pair<char, Character>(c, character));
+                if (c < 128) chars.add(character);
             }
 
             glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -336,21 +325,19 @@ public class Game {
                 g = 0;
                 b = 0;
                 glClearColor(0, 0, b0, 1.0f);
-                glfwSetCursorPosCallback(windowManager.getWindow(), new GLFWCursorPosCallback() {
-                    @Override
-                    public void invoke(long window, double xpos, double ypos) {
-                        if (xpos > 414 && ypos > 213 && ypos < 864 && ypos < 324) {
-                            if (glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-                                glfwSetCursorPos(windowManager.getWindow(), GameWindowManager.getWidth() / 2, GameWindowManager.getHeight() / 2);
-                                glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                                glEnable(GL_DEPTH_TEST);
-                                isMainMenu[0] = false;
-                                firstTick[0] = true;
-                                System.out.println("Button Pressed");
-                            }
-                        }
+                if (glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
+                    double[] xpos = new double[1];
+                    double[] ypos = new double[1];
+                    glfwGetCursorPos(windowManager.getWindow(), xpos, ypos);
+                    if (xpos[0] > 414 && xpos[0] < 864 && ypos[0] > 213 && ypos[0] < 324) {
+                        glfwSetCursorPos(windowManager.getWindow(), GameWindowManager.getWidth() / 2, GameWindowManager.getHeight() / 2);
+                        glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                        glEnable(GL_DEPTH_TEST);
+                        isMainMenu[0] = false;
+                        firstTick[0] = true;
+                        System.out.println("Button Pressed");
                     }
-                });
+                }
                 if (glfwGetMouseButton(windowManager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
                     ImGui.text("Left Mouse Button Pressed ");
                 }
@@ -379,29 +366,28 @@ public class Game {
 
 
                 for (int i = 0; i < terArrX.length; i++) {
-                    modelPlayer.move(terArrX[i], isDevMode);
+                    if (terArrX[i].containsPosition(modelPlayer.getPos().x, modelPlayer.getPos().z)) {
+                        modelPlayer.move(terArrX[i], isDevMode);
+                    }
                     renderer.processTerrain(terArrX[i]);
                 }
                 renderer.processModel(model2);
                 renderer.processModel(modelPlayer);
                 renderer.processModel(lampModel);
 
+                MasterRenderer.disableCulling();
                 for (Model tree : allTrees) {
-                    MasterRenderer.disableCulling();
                     renderer.processModel(tree);
-                    MasterRenderer.enableCulling();
                 }
-                int a = 2;
-                Integer a2 = new Integer(a);
-//                AbstractMap.SimpleImmutableEntry<a, a2>
-//                Pair<a, a2>
-                Light light = new Light(new Vector3f(x, 1000000, 200000), new Vector3f(1f, 1f, 1f));
-                List<Light> lights = new ArrayList<Light>();
-                lights.add(light);
-                lights.add(new Light(new Vector3f(0, 1000, -7000), new Vector3f(0.4f, 0.4f, 0.4f)));
-                lights.add(new Light(new Vector3f(185, 10, -293), new Vector3f(0, 2, 2), new Vector3f(1, 0.01f, 0.002f)));
+                MasterRenderer.enableCulling();
 
-                renderer.render(lights, camera);
+                sunLight.getPos().set(x, 1000000, 200000);
+                frameLights.clear();
+                frameLights.add(sunLight);
+                frameLights.add(ambientLight);
+                frameLights.add(lampLight);
+
+                renderer.render(frameLights, camera);
 
                 if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_F1) != GLFW_PRESS) {
                     guiRenderer.renderGUIs(guiTextures);

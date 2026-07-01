@@ -50,32 +50,25 @@ public class Player extends Model {
         if (!isInAir) {
             this.upwardMomentum = JUMP_STRENGTH;
             isInAir = true;
-        } else {
-            ; //do nothing
         }
     }
 
     private void checkInput(boolean devMode) {
 
-
         if (!devMode) {
             if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
-                System.out.println("W");
                 this.currentSpeed = RUN_SPEED;
             } else if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
                 this.currentSpeed = -RUN_SPEED;
-                System.out.println("S");
             } else {
                 this.currentSpeed = 0;
             }
-            if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) { //player movement: this speed is temporary till  i redo it
+            if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
                 this.currentSpeed = 100;
             }
             if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
-                System.out.println("D");
                 this.currentTurnSpeed = -TURN_SPEED;
             } else if (glfwGetKey(w_Manager.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
-                System.out.println("A");
                 this.currentTurnSpeed = TURN_SPEED;
             } else {
                 this.currentTurnSpeed = 0;

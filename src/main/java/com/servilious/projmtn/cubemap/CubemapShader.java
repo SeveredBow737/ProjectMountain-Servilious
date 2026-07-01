@@ -23,6 +23,9 @@ public class CubemapShader extends BaseShaderProgram {
 
     private GameWindowManager manager;
 
+    private final Vector3f reuseVec3 = new Vector3f();
+    private final Matrix4f reuseViewMatrix = new Matrix4f();
+
     public CubemapShader(GameWindowManager manager) {
         super(VERTEX_PATH, FRAGMENT_PATH);
         this.manager = manager;
@@ -48,17 +51,17 @@ public class CubemapShader extends BaseShaderProgram {
     }
 
     public void loadFogColor(float r, float g, float b) {
-        super.setVec3(location_fogColor, new Vector3f(r, g, b));
+        super.setVec3(location_fogColor, reuseVec3.set(r, g, b));
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f mat4 = MathHelper.createViewMatrix(camera);
-        mat4.m30(0);
-        mat4.m31(0);
-        mat4.m33(0);
+        MathHelper.createViewMatrix(camera, reuseViewMatrix);
+        reuseViewMatrix.m30(0);
+        reuseViewMatrix.m31(0);
+        reuseViewMatrix.m33(0);
         rotation += ROTATION_SPEED * manager.getFrameTimeSeconds();
-        mat4.rotate((float) Math.toRadians(rotation), new Vector3f(0, 1, 0));
-        super.setMat4(location_viewMatrix, mat4);
+        reuseViewMatrix.rotateY((float) Math.toRadians(rotation));
+        super.setMat4(location_viewMatrix, reuseViewMatrix);
     }
 
     public void loadProjectionMatrix(Matrix4f mat4) {

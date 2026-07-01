@@ -15,22 +15,14 @@ public class OBJLoader {
 
 
     public static ModelData loadObjFile(String resName) {
-        FileReader fr = null;
         File objFile = new File(MODEL_PATH + resName + ".obj");
-        try {
-            fr = new FileReader(objFile);
-        } catch (FileNotFoundException e) {
-            System.err.println("[ERROR-9] Failed to find/load OBJ file");
-            e.printStackTrace();
-            System.exit(-9);
-        }
-        BufferedReader br = new BufferedReader(fr);
-        String line;
         List<Vertex> vertices = new ArrayList<Vertex>();
         List<Vector2f> textures = new ArrayList<Vector2f>();
         List<Vector3f> normals = new ArrayList<Vector3f>();
         List<Integer> indices = new ArrayList<Integer>();
-        try {
+
+        try (BufferedReader br = new BufferedReader(new FileReader(objFile))) {
+            String line;
             while (true) {
                 line = br.readLine();
                 if (line.startsWith("v ")) {
@@ -67,7 +59,10 @@ public class OBJLoader {
                 processVertex(vertex3, vertices, indices);
                 line = br.readLine();
             }
-            br.close();
+        } catch (FileNotFoundException e) {
+            System.err.println("[ERROR-9] Failed to find/load OBJ file");
+            e.printStackTrace();
+            System.exit(-9);
         } catch (IOException e) {
             System.err.println("[ERROR-9:1] Failed to read OBJ file, either it's Corrupted or not exported as OBJ file. \n Please Make sure you Exported it as OBJ and that it is not corrupted: eg: no v, vn, vt, f's in the file!!");
             e.printStackTrace();

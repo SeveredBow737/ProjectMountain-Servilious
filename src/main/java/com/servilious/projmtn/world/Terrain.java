@@ -35,6 +35,10 @@ public class Terrain {
     }
 
 
+    public boolean containsPosition(float worldX, float worldZ) {
+        return worldX >= x && worldX < x + SIZE && worldZ >= z && worldZ < z + SIZE;
+    }
+
     public float getX() {
         return x;
     }

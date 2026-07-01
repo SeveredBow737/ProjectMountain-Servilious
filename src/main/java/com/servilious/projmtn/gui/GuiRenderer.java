@@ -32,8 +32,6 @@ public class GuiRenderer {
             glBindTexture(GL_TEXTURE_2D, gui.getTex());
             Matrix4f mat = MathHelper.setupTransformationMatrix(gui.getPos(), gui.getScale());
             shader.loadTransformation(mat);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         }
         glEnable(GL_DEPTH_TEST);
@@ -50,15 +48,11 @@ public class GuiRenderer {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDisable(GL_DEPTH_TEST);
-      //  for (GuiTexture gui : guis) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, gui.getTex());
-            Matrix4f mat = MathHelper.setupTransformationMatrix(gui.getPos(), gui.getScale());
-            shader.loadTransformation(mat);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
-     //   }
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, gui.getTex());
+        Matrix4f mat = MathHelper.setupTransformationMatrix(gui.getPos(), gui.getScale());
+        shader.loadTransformation(mat);
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);
         glDisableVertexAttribArray(0);

@@ -3,6 +3,8 @@ package com.servilious.projmtn.util;
 import com.servilious.projmtn.window.GameWindowManager;
 import com.servilious.projmtn.world.Terrain;
 import org.joml.Matrix4f;
+
+import static org.lwjgl.glfw.GLFW.glfwGetCursorPos;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -44,11 +46,10 @@ public class MousePicker {
     }
 
     private Vector3f calculateMouseRay() {
-
-
-        float mx = 0; //Mouse.getX();
-        float my = 0; //  Mouse.getY();
-        Vector2f normalisedCoords = convertNormalizedDeviceCoords(mx, my);
+        double[] mx = new double[1];
+        double[] my = new double[1];
+        glfwGetCursorPos(windowManager.getWindow(), mx, my);
+        Vector2f normalisedCoords = convertNormalizedDeviceCoords((float) mx[0], (float) my[0]);
         Vector4f clipCoords = new Vector4f(normalisedCoords.x, normalisedCoords.y, -1F, 1F);
         Vector4f viewCoords = inverseProjectionMatrix(clipCoords);
         Vector3f worldRay = inverseViewMatrix(viewCoords);
@@ -76,14 +77,13 @@ public class MousePicker {
     private Vector2f convertNormalizedDeviceCoords(float mx, float my) {
         float x = (2F * mx) / GameWindowManager.getWidth() - 1;
         float y = (2F * my) / GameWindowManager.getHeight() - 1F;
-        return new Vector2f(mx, my);
+        return new Vector2f(x, y);
     }
 
     private Vector3f getPointOnRay(Vector3f ray, float distance) {
         Vector3f camPos = camera.getPos();
-        Vector3f start = new Vector3f(camPos.x, camPos.y, camPos.z);
         Vector3f scaledRay = new Vector3f(ray.x * distance, ray.y * distance, ray.z * distance);
-        return scaledRay.add(start.x, scaledRay.y, scaledRay.z);
+        return new Vector3f(camPos.x + scaledRay.x, camPos.y + scaledRay.y, camPos.z + scaledRay.z);
     }
 
     private Vector3f binarySearch(int count, float start, float finish, Vector3f ray) {

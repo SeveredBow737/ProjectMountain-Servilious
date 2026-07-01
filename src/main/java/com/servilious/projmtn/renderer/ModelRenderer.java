@@ -20,6 +20,7 @@ import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class ModelRenderer {
     private BaseShader shader;
+    private final Matrix4f reuseMatrix = new Matrix4f();
 
     public ModelRenderer(BaseShader shader, Matrix4f projectionMatrix) {
         this.shader = shader;
@@ -55,8 +56,6 @@ public class ModelRenderer {
         shader.loadAdditionalLightingFeatures(texture.getShineFactor(), texture.getReflectivity());
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texModels.getModelTex().getId());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     private void unbindTexturedModel() {

@@ -29,6 +29,12 @@ public class BaseShader extends BaseShaderProgram {
     private int location_numOfRows;
     private int location_offset;
 
+    private final Vector3f reuseVec3 = new Vector3f();
+    private final Vector2f reuseVec2 = new Vector2f();
+    private final Matrix4f reuseViewMatrix = new Matrix4f();
+    private final Vector3f ZERO = new Vector3f(0);
+    private final Vector3f ONE_ZERO_ZERO = new Vector3f(1, 0, 0);
+
     public BaseShader() {
         super(VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE);
     }
@@ -66,11 +72,11 @@ public class BaseShader extends BaseShaderProgram {
     }
 
     public void loadOffset(float x, float y) {
-        super.setVec2(location_offset, new Vector2f(x, y));
+        super.setVec2(location_offset, reuseVec2.set(x, y));
     }
 
     public void loadSkyColor(float r, float g, float b) {
-        super.setVec3(location_skyColor, new Vector3f(r, g, b));
+        super.setVec3(location_skyColor, reuseVec3.set(r, g, b));
     }
 
     public void loadFakeLighting(boolean useFakeLighting) {
@@ -83,16 +89,16 @@ public class BaseShader extends BaseShaderProgram {
     }
 
     public void loadLights(List<Light> lights) {
-        for (int i = 0; i < MAX_LIGHT; i++) {
-            if (i < lights.size()) {
-                super.setVec3(location_lightPos[i], lights.get(i).getPos());
-                super.setVec3(location_lightColor[i], lights.get(i).getColor());
-                super.setVec3(location_attenuation[i], lights.get(i).getAttenuation());
-            } else {
-                super.setVec3(location_lightPos[i], new Vector3f(0, 0, 0));
-                super.setVec3(location_lightColor[i], new Vector3f(0, 0, 0));
-                super.setVec3(location_attenuation[i], new Vector3f(1, 0, 0));
-            }
+        int i = 0;
+        for (; i < lights.size() && i < MAX_LIGHT; i++) {
+            super.setVec3(location_lightPos[i], lights.get(i).getPos());
+            super.setVec3(location_lightColor[i], lights.get(i).getColor());
+            super.setVec3(location_attenuation[i], lights.get(i).getAttenuation());
+        }
+        for (; i < MAX_LIGHT; i++) {
+            super.setVec3(location_lightPos[i], ZERO);
+            super.setVec3(location_lightColor[i], ZERO);
+            super.setVec3(location_attenuation[i], ONE_ZERO_ZERO);
         }
     }
 
@@ -105,7 +111,7 @@ public class BaseShader extends BaseShaderProgram {
     }
 
     public void loadViewMatrix(Camera camera) {
-        Matrix4f viewMatrix = MathHelper.createViewMatrix(camera);
-        super.setMat4(location_viewMatrix, viewMatrix);
+        MathHelper.createViewMatrix(camera, reuseViewMatrix);
+        super.setMat4(location_viewMatrix, reuseViewMatrix);
     }
 }

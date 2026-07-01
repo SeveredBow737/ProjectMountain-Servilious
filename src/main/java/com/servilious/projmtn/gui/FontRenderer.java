@@ -43,8 +43,6 @@ public class FontRenderer {
         glBindTexture(GL_TEXTURE_2D, font.getTex());
         Matrix4f mat = MathHelper.setupTransformationMatrix(font.getPos(), font.getScale());
         shader.loadTransformation(mat);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         glDrawArrays(GL_TRIANGLE_STRIP, 0, quad.getVertexCount());
         glEnable(GL_DEPTH_TEST);
         glDisable(GL_BLEND);

@@ -1,7 +1,6 @@
 package com.servilious.projmtn;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -11,17 +10,13 @@ public class GlobalConstants {
 
     public static int loadShader(String shaderPath, int shaderType) {
         StringBuilder sb = new StringBuilder();
-        BufferedReader br;
         String line;
-        try {
-            br = new BufferedReader(new FileReader(shaderPath));
+        try (BufferedReader br = new BufferedReader(new FileReader(shaderPath))) {
             while ((line = br.readLine()) != null) {
                 sb.append(line).append('\n');
             }
-        } catch (FileNotFoundException e) {
-            System.err.println("Failed to Find Shader(s)!");
         } catch (IOException e) {
-            System.err.println("Failed to read line!");
+            System.err.println("Failed to read shader file!");
         }
         int shaderID = glCreateShader(shaderType);
         glShaderSource(shaderID, sb);

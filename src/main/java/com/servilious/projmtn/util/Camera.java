@@ -4,8 +4,6 @@ import com.servilious.projmtn.renderer.Player;
 import com.servilious.projmtn.window.GameWindowManager;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.lwjgl.glfw.GLFWCursorPosCallback;
-import org.lwjgl.glfw.GLFWScrollCallback;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -16,6 +14,8 @@ public class Camera {
     private Vector3f position = new Vector3f(0, 0, 0);
     private float pitch = 12;
     private float yaw;
+    private float yawRad;
+    private float pitchRad;
 
     private Player player;
 
@@ -30,35 +30,28 @@ public class Camera {
     private GameWindowManager manager;
     private boolean isMouseLocked = true;
 
-    //this class like 90% of classes i plan on to refactor in the future. this is just so it doesn't get too hard following the tutorials by having a completely different code!
-
     public void move(boolean devMode, GameWindowManager windowManager) {
         this.manager = windowManager;
 
-
-        if (!isMouseLocked) {
-            glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        } else {
-            glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        }
+        glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, isMouseLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 
         if (devMode) {
-            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_W) == GLFW_PRESS ) {
-                position.z -= Math.cos(Math.toRadians(yaw)) * speed;
-                position.x += Math.sin(Math.toRadians(yaw)) * speed;
+            if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
+                position.z -= (float) Math.cos(yawRad) * speed;
+                position.x += (float) Math.sin(yawRad) * speed;
             }
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
-                position.z += Math.cos(Math.toRadians(yaw)) * speed;
-                position.x -= Math.sin(Math.toRadians(yaw)) * speed;
+                position.z += (float) Math.cos(yawRad) * speed;
+                position.x -= (float) Math.sin(yawRad) * speed;
             }
 
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
-                position.x -= Math.cos(Math.toRadians(yaw)) * speed;
-                position.z -= Math.sin(Math.toRadians(yaw)) * speed;
+                position.x -= (float) Math.cos(yawRad) * speed;
+                position.z -= (float) Math.sin(yawRad) * speed;
             }
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
-                position.x += Math.cos(Math.toRadians(yaw)) * speed;
-                position.z += Math.sin(Math.toRadians(yaw)) * speed;
+                position.x += (float) Math.cos(yawRad) * speed;
+                position.z += (float) Math.sin(yawRad) * speed;
             }
 
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
@@ -67,7 +60,6 @@ public class Camera {
                 speed = 0.05f;
             }
 
-
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
                 position.y -= speed;
             }
@@ -75,46 +67,32 @@ public class Camera {
                 position.y += speed;
             }
 
-
-
             if (isMouseLocked) {
-                glfwSetCursorPosCallback(windowManager.getWindow(), new GLFWCursorPosCallback() {
-                    @Override
-                    public Descriptor getDescriptor() {
-                        return super.getDescriptor();
-                    }
+                double[] xpos = new double[1];
+                double[] ypos = new double[1];
+                glfwGetCursorPos(windowManager.getWindow(), xpos, ypos);
+                int cym = (int) ypos[0];
+                int cxm = (int) xpos[0];
 
-                    @Override
-                    public void callback(long ret, long args) {
-                        super.callback(ret, args);
-                    }
+                float dx = cxm - lxm;
+                float dy = cym - lym;
 
-                    @Override
-                    public void invoke(long window, double xpos, double ypos) {
-                        int cym = (int) ypos;
-                        int cxm = (int) xpos;
+                pitch += dy * lookSpeed;
+                yaw += dx * lookSpeed;
+                yawRad = (float) Math.toRadians(yaw);
+                pitchRad = (float) Math.toRadians(pitch);
 
-                        Vector2f deltaMouse = new Vector2f(cxm - lxm, cym - lym);
+                lym = cym;
+                lxm = cxm;
 
-                        pitch += deltaMouse.y * lookSpeed;
-                        yaw += deltaMouse.x * lookSpeed;
-
-                        lym = (int) ypos;
-                        lxm = (int) xpos;
-
-                        lym = (int) ypos;
-                        lxm = (int) xpos;
-
-                        if (pitch > 90.0) {
-                            pitch = 89.9f;
-                        }
-                        if (pitch < -90.0) {
-                            pitch = -89.9f;
-                        }
-                    }
-                });
+                if (pitch > 90.0) {
+                    pitch = 89.9f;
+                }
+                if (pitch < -90.0) {
+                    pitch = -89.9f;
+                }
             }
-        } else if (!devMode) {
+        } else {
           calculateZoom();
           calculatePitch();
           calculateAngleSphericalFromPlayer();
@@ -122,6 +100,7 @@ public class Camera {
           float vertDist = calculateVerticelDist();
           calculateCamPos(horizDist, vertDist);
           this.yaw = 180 - (player.getRotY() + angleSphericalOfPlayer);
+          this.yawRad = (float) Math.toRadians(this.yaw);
         }
     }
 
@@ -135,53 +114,39 @@ public class Camera {
     }
 
     private float calculateHorizontalDist() {
-        return distFromPlayer * (float) Math.cos(Math.toRadians(pitch));
+        return distFromPlayer * (float) Math.cos(pitchRad);
     }
 
     private float calculateVerticelDist() {
-        return distFromPlayer * (float) Math.sin(Math.toRadians(pitch));
+        return distFromPlayer * (float) Math.sin(pitchRad);
     }
 
 
     private void calculateZoom() {
-        glfwSetScrollCallback(manager.getWindow(), new GLFWScrollCallback() {
-                @Override
-                public void invoke(long window, double xoffset, double yoffset) {
-                    double zoomLevel = 0;;
-                    zoomLevel = -(yoffset * 20f);
-                    distFromPlayer += zoomLevel;
-                }
-            });
-
+        double[] scrollY = new double[1];
+        scrollY[0] = 0;
+        glfwSetScrollCallback(manager.getWindow(), (long window, double xoffset, double yoffset) -> {
+            scrollY[0] = yoffset;
+        });
+        distFromPlayer += -(scrollY[0] * 20f);
     }
 
     private void calculatePitch() {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
-
-            glfwSetCursorPosCallback(manager.getWindow(), new GLFWCursorPosCallback() {
-                @Override
-                public void invoke(long window, double xpos, double ypos) {
-                    float pitchChange = (float) (ypos * 20f);  // Mouse.getDY() * 0.1f;
-                    pitch += pitchChange;
-                }
-            });
-        } else {
-            glfwSetCursorPosCallback(manager.getWindow(), null);
+            double[] ypos = new double[1];
+            glfwGetCursorPos(manager.getWindow(), null, ypos);
+            float pitchChange = (float) (ypos[0] * 20f);
+            pitch += pitchChange;
+            pitchRad = (float) Math.toRadians(pitch);
         }
     }
 
     private void calculateAngleSphericalFromPlayer() {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
-            glfwSetCursorPosCallback(manager.getWindow(), new GLFWCursorPosCallback() {
-
-                @Override
-                public void invoke(long window, double xpos, double ypos) {
-                    float angleChange = (float) -(xpos * 0.001f);
-                    angleSphericalOfPlayer += angleChange;
-                }
-            });
-        } else {
-            glfwSetCursorPosCallback(manager.getWindow(), null);
+            double[] xpos = new double[1];
+            glfwGetCursorPos(manager.getWindow(), xpos, null);
+            float angleChange = (float) -(xpos[0] * 0.001f);
+            angleSphericalOfPlayer += angleChange;
         }
     }
 
@@ -199,10 +164,12 @@ public class Camera {
 
     public void setYaw(float yaw) {
         this.yaw = yaw;
+        this.yawRad = (float) Math.toRadians(yaw);
     }
 
     public void setPitch(float pitch) {
         this.pitch = pitch;
+        this.pitchRad = (float) Math.toRadians(pitch);
     }
 
     public void setPos(Vector3f pos) {

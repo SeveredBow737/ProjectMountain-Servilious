@@ -10,6 +10,8 @@ public class Model {
     private float rotX, rotY, rotZ;
     private float scale;
     private int texIndex = 0;
+    private float texXOffset;
+    private float texYOffset;
 
     public Model(TexturedModel texModel, Vector3f pos, float rx, float ry, float rz, float scale) {
         this.texturedModel = texModel;
@@ -18,6 +20,7 @@ public class Model {
         this.rotY = ry;
         this.rotZ = rz;
         this.scale = scale;
+        cacheTexOffsets();
     }
 
     public Model(TexturedModel texModel, int index, Vector3f pos, float rx, float ry, float rz, float scale) {
@@ -28,16 +31,23 @@ public class Model {
         this.rotY = ry;
         this.rotZ = rz;
         this.scale = scale;
+        cacheTexOffsets();
+    }
+
+    private void cacheTexOffsets() {
+        int numOfRows = texturedModel.getModelTex().getNumOfRows();
+        int column = texIndex % numOfRows;
+        int row = texIndex / numOfRows;
+        texXOffset = (float) column / (float) numOfRows;
+        texYOffset = (float) row / (float) numOfRows;
     }
 
     public float getTexXOffset() {
-        int column = texIndex % texturedModel.getModelTex().getNumOfRows();
-        return (float) column / (float) texturedModel.getModelTex().getNumOfRows();
+        return texXOffset;
     }
 
     public float getTexYOffset() {
-        int row = texIndex / texturedModel.getModelTex().getNumOfRows();
-        return (float) row / (float) texturedModel.getModelTex().getNumOfRows();
+        return texYOffset;
     }
 
 
