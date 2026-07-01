@@ -76,7 +76,11 @@ public class Game {
 
 
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
+        new Game().run(args);
+    }
+
+    public void run(String[] args) {
         ImGui.createContext();
         for (int i = 0; i < args.length; i++) { //i copied this from classic 0.0.13a main method
             if (args[i].equalsIgnoreCase("-enableDevMode")) {
@@ -112,7 +116,7 @@ public class Game {
             PointerBuffer faceB = stack.mallocPointer(1);  //FT_Face.create(1).charmaps(); //  stack.mallocPointer(1);
 
             long errFC = FreeType.FT_New_Face(lib, GlobalConstants.getResourcePath() + "/textures/font/arial.ttf", 0, faceB);
-            face = new FT_Face(faceB.getByteBuffer(217));
+            face = FT_Face.create(faceB.get(0));
             if (errFC != FreeType.FT_Err_Ok) {
                 System.err.println("Failed to load Font File!");
             }
