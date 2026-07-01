@@ -25,10 +25,17 @@ public class Camera {
 
     public float speed = 0.05f;
     public float lookSpeed = 0.3f;
-    public int lym, lxm;
-    public boolean beenRightClicking = false;
+
     private GameWindowManager manager;
     private boolean isMouseLocked = true;
+
+    private boolean cursorInit = false;
+    private float lastMouseX, lastMouseY;
+    private float lastPitchMouseY;
+    private boolean wasPitching = false;
+    private float lastAngleMouseX;
+    private boolean wasAngling = false;
+    private float scrollAccum = 0;
 
     public void move(boolean devMode, GameWindowManager windowManager) {
         this.manager = windowManager;
@@ -36,6 +43,14 @@ public class Camera {
         glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, isMouseLocked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 
         if (devMode) {
+            if (!cursorInit) {
+                double[] mx = new double[1], my = new double[1];
+                glfwGetCursorPos(windowManager.getWindow(), mx, my);
+                lastMouseX = (float) mx[0];
+                lastMouseY = (float) my[0];
+                cursorInit = true;
+            }
+
             if (glfwGetKey(windowManager.getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
                 position.z -= (float) Math.cos(yawRad) * speed;
                 position.x += (float) Math.sin(yawRad) * speed;
@@ -71,19 +86,19 @@ public class Camera {
                 double[] xpos = new double[1];
                 double[] ypos = new double[1];
                 glfwGetCursorPos(windowManager.getWindow(), xpos, ypos);
-                int cym = (int) ypos[0];
-                int cxm = (int) xpos[0];
+                float cxm = (float) xpos[0];
+                float cym = (float) ypos[0];
 
-                float dx = cxm - lxm;
-                float dy = cym - lym;
+                float dx = cxm - lastMouseX;
+                float dy = cym - lastMouseY;
 
                 pitch += dy * lookSpeed;
                 yaw += dx * lookSpeed;
                 yawRad = (float) Math.toRadians(yaw);
                 pitchRad = (float) Math.toRadians(pitch);
 
-                lym = cym;
-                lxm = cxm;
+                lastMouseX = cxm;
+                lastMouseY = cym;
 
                 if (pitch > 90.0) {
                     pitch = 89.9f;
@@ -123,21 +138,27 @@ public class Camera {
 
 
     private void calculateZoom() {
-        double[] scrollY = new double[1];
-        scrollY[0] = 0;
         glfwSetScrollCallback(manager.getWindow(), (long window, double xoffset, double yoffset) -> {
-            scrollY[0] = yoffset;
+            scrollAccum += (float) yoffset;
         });
-        distFromPlayer += -(scrollY[0] * 20f);
+        distFromPlayer += -(scrollAccum * 20f);
+        scrollAccum = 0;
     }
 
     private void calculatePitch() {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS) {
             double[] ypos = new double[1];
             glfwGetCursorPos(manager.getWindow(), null, ypos);
-            float pitchChange = (float) (ypos[0] * 20f);
+            if (!wasPitching) {
+                wasPitching = true;
+                lastPitchMouseY = (float) ypos[0];
+            }
+            float pitchChange = (lastPitchMouseY - (float) ypos[0]) * 0.1f;
             pitch += pitchChange;
             pitchRad = (float) Math.toRadians(pitch);
+            lastPitchMouseY = (float) ypos[0];
+        } else {
+            wasPitching = false;
         }
     }
 
@@ -145,8 +166,15 @@ public class Camera {
         if (glfwGetMouseButton(manager.getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS) {
             double[] xpos = new double[1];
             glfwGetCursorPos(manager.getWindow(), xpos, null);
-            float angleChange = (float) -(xpos[0] * 0.001f);
+            if (!wasAngling) {
+                wasAngling = true;
+                lastAngleMouseX = (float) xpos[0];
+            }
+            float angleChange = -(lastAngleMouseX - (float) xpos[0]) * 0.001f;
             angleSphericalOfPlayer += angleChange;
+            lastAngleMouseX = (float) xpos[0];
+        } else {
+            wasAngling = false;
         }
     }
 

@@ -64,4 +64,4 @@ Contributions are welcome! Reach out on Discord (severedbow737) to discuss what 
 
 ## License
 
-This project is currently unlicensed.
+This project is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE) for details.
