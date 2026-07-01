@@ -1,14 +1,11 @@
 package com.servilious.projmtn.util;
 
-import com.servilious.projmtn.renderer.Camera;
 import com.servilious.projmtn.window.GameWindowManager;
 import com.servilious.projmtn.world.Terrain;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-
-import static org.lwjgl.glfw.GLFW.glfwSetCursorPosCallback;
 
 public class MousePicker {
     private static final int RECURSION_COUNT = 200;

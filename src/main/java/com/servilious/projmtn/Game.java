@@ -1,7 +1,7 @@
 package com.servilious.projmtn;
 
 import com.servilious.projmtn.gui.*;
-import com.servilious.projmtn.renderer.Camera;
+import com.servilious.projmtn.util.Camera;
 import com.servilious.projmtn.renderer.MasterRenderer;
 import com.servilious.projmtn.renderer.Player;
 import com.servilious.projmtn.renderer.VertexLoader;
@@ -31,12 +31,10 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.util.freetype.FT_Face;
 import org.lwjgl.util.freetype.FreeType;
 
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.security.KeyPair;
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -361,7 +359,7 @@ public class Game {
 
             if (!isMainMenu[0]) {
                 if (firstTick[0] == true) {
-                   camera.setPos(new Vector3f(0, 0, 0));
+                   camera.setPos(new Vector3f(0, 2, 0));
                    camera.setYaw(0.0f);
                    camera.setPitch(0.0f);
                    firstTick[0] = false;
@@ -389,6 +387,10 @@ public class Game {
                     renderer.processModel(tree);
                     MasterRenderer.enableCulling();
                 }
+                int a = 2;
+                Integer a2 = new Integer(a);
+//                AbstractMap.SimpleImmutableEntry<a, a2>
+//                Pair<a, a2>
                 Light light = new Light(new Vector3f(x, 1000000, 200000), new Vector3f(1f, 1f, 1f));
                 List<Light> lights = new ArrayList<Light>();
                 lights.add(light);
@@ -516,59 +518,3 @@ public class Game {
         implGl3.init(glslVer);
     }
 }
-//  isPaused = true;
-//                    if (isPaused) {
-//                        glfwSetInputMode(windowManager.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-//                    //    guiRenderer.renderGUI(guiButton);
-//                    }
-//        terArrX[0] = new Terrain(1,-1, loader, terrainTexture, blendMap, "heightmap_5");//negative quad positive X: 0, n
-//        terArrX[1] = new Terrain(-1,1, loader, terrainTexture, blendMap, "heightmap_7");//negative quad X: 1, Z: positiv
-//        terArrX[2] = new Terrain(-0,-1, loader, terrainTexture, blendMap, "heightmap_1"); //negative quad X: 0, Z: 1
-//        terArrX[3] = new Terrain(-1,-0, loader, terrainTexture, blendMap, "heightmap_4"); //negative quad X: 1, Z: 0
-//        terArrX[4] = new Terrain(-1,-1, loader, terrainTexture, blendMap, "heightmap_8"); //negative quad X: 1, Z: 1
-//        terArrX[5] = new Terrain(0,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 0, Z: 0
-//        terArrX[6] = new Terrain(0,1, loader, terrainTexture, blendMap, "hillymap_1");//positive quad X: 0, Z: 1
-//        terArrX[7] = new Terrain(1,0, loader, terrainTexture, blendMap, "reactormap"); //positive quad X: 1, Z: 0
-
-///unused code
-//        Terrain quad1m1 = new Terrain(1,-1, loader, terrainTexture, blendMap, "heightmap_5");//negative quad positive X: 0, negative Z: 1
-//        Terrain quadm1p1 = new Terrain(-1,1, loader, terrainTexture, blendMap, "heightmap_7");//negative quad X: 1, Z: positive 1
-//        Terrain mQuad01 = new Terrain(-0,-1, loader, terrainTexture, blendMap, "heightmap_1"); //negative quad X: 0, Z: 1
-//        Terrain mQuad10 = new Terrain(-1,-0, loader, terrainTexture, blendMap, "heightmap_4"); //negative quad X: 1, Z: 0
-//        Terrain mQuad11 = new Terrain(-1,-1, loader, terrainTexture, blendMap, "heightmap_8"); //negative quad X: 1, Z: 1
-//
-//        Terrain quad00 = new Terrain(0,0, loader, terrainTexture, blendMap, "flatmap"); //positive quad X: 0, Z: 0
-//        Terrain quad01 = new Terrain(0,1, loader, terrainTexture, blendMap, "hillymap_1");//positive quad X: 0, Z: 1
-//        Terrain quad10 = new Terrain(1,0, loader, terrainTexture, blendMap, "reactormap"); //positive quad X: 1, Z: 0
-//        Terrain quad11 = new Terrain(1,1, loader, terrainTexture, blendMap, "hillymap_0"); //positive quad X: 1, Z: 1
-/*
-            //modelPlayer.move(quad00, isDevMode);
-
-    //        picker.tick();
-         //   Vector3f terrainPointer = picker.getCurrentRay();
-            ///code to move lamp around using mouse position
-//            if (terrainPointer != null) {
-//                lampModel.setPos(terrainPointer);
-//                light.setPos(new Vector3f(terrainPointer.x, terrainPointer.y + 10, terrainPointer.z));
-//            }
-
-      //      System.out.println(picker.getCurrentRay());
-
-
-        //    ttf.drawString(100, 100, "Hello World");
-
-//            renderer.processTerrain(mQuad11);
-//            renderer.processTerrain(mQuad10);
-//            renderer.processTerrain(mQuad01);
-//            renderer.processTerrain(quad1m1);
-//            renderer.processTerrain(quadm1p1);
-//            renderer.processTerrain(quad00);
-//            renderer.processTerrain(quad01);
-//            renderer.processTerrain(quad10);
-//            renderer.processTerrain(quad11);
-
-//                for (int j = 0; j < terArrY.length; j++) {
-//                    renderer.processTerrain(terArrY[j]);
-//                }
-
- */

@@ -6,6 +6,7 @@ import com.servilious.projmtn.renderer.model.Model;
 import com.servilious.projmtn.renderer.model.textures.TexturedModel;
 import com.servilious.projmtn.shaders.BaseShader;
 import com.servilious.projmtn.shaders.TerrainShader;
+import com.servilious.projmtn.util.Camera;
 import com.servilious.projmtn.window.GameWindowManager;
 import com.servilious.projmtn.world.Terrain;
 import org.joml.Matrix4f;

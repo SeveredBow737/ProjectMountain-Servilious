@@ -1,6 +1,6 @@
 package com.servilious.projmtn.cubemap;
 
-import com.servilious.projmtn.renderer.Camera;
+import com.servilious.projmtn.util.Camera;
 import com.servilious.projmtn.renderer.VertexLoader;
 import com.servilious.projmtn.renderer.model.BaseModel;
 import com.servilious.projmtn.window.GameWindowManager;

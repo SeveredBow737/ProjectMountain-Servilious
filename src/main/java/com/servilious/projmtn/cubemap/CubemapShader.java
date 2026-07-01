@@ -1,7 +1,7 @@
 package com.servilious.projmtn.cubemap;
 
 import com.servilious.projmtn.GlobalConstants;
-import com.servilious.projmtn.renderer.Camera;
+import com.servilious.projmtn.util.Camera;
 import com.servilious.projmtn.shaders.BaseShaderProgram;
 import com.servilious.projmtn.util.MathHelper;
 import com.servilious.projmtn.window.GameWindowManager;

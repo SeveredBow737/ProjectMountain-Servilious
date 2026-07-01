@@ -1,7 +1,7 @@
 package com.servilious.projmtn.shaders;
 
 import com.servilious.projmtn.GlobalConstants;
-import com.servilious.projmtn.renderer.Camera;
+import com.servilious.projmtn.util.Camera;
 import com.servilious.projmtn.renderer.model.Light;
 import com.servilious.projmtn.util.MathHelper;
 import org.joml.Matrix4f;

@@ -1,7 +1,7 @@
-package com.servilious.projmtn.renderer;
+package com.servilious.projmtn.util;
 
+import com.servilious.projmtn.renderer.Player;
 import com.servilious.projmtn.window.GameWindowManager;
-import imgui.ImGui;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.lwjgl.glfw.GLFWCursorPosCallback;
