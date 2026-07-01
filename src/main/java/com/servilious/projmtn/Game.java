@@ -368,7 +368,10 @@ public class Game {
                 for (int i = 0; i < terArrX.length; i++) {
                     if (terArrX[i].containsPosition(modelPlayer.getPos().x, modelPlayer.getPos().z)) {
                         modelPlayer.move(terArrX[i], isDevMode);
+                        break;
                     }
+                }
+                for (int i = 0; i < terArrX.length; i++) {
                     renderer.processTerrain(terArrX[i]);
                 }
                 renderer.processModel(model2);
