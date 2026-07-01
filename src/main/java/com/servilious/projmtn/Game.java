@@ -78,7 +78,11 @@ public class Game {
 
 
 
-    public void main(String[] args) {
+    public static void main(String[] args) {
+        new Game().run(args);
+    }
+
+    public void run(String[] args) {
         ImGui.createContext();
         for (int i = 0; i < args.length; i++) { //i copied this from classic 0.0.13a main method
             if (args[i].equalsIgnoreCase("-enableDevMode")) {
