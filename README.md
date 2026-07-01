@@ -56,6 +56,9 @@ Run directly via Gradle (no manual installation required):
 ```
 
 ## Contributing
+(Current List of Contributors)
+SeveredBow737 (Project Owner)
+ItzzMateo (Project Contributor and Linux stuff)
 
 Contributions are welcome! Reach out on Discord (severedbow737) to discuss what you'd like to work on.
 
